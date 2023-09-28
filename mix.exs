@@ -32,7 +32,9 @@ defmodule CloudflareAccessEx.MixProject do
     [
       {:credo, "~> 1.7", only: :test, runtime: false},
       {:dialyxir, "~> 1.3", only: :test, runtime: false},
-      {:ex_check, "~> 0.14.0", only: :test, runtime: false}
+      {:doctor, "~> 0.21.0", only: :test, runtime: false},
+      {:ex_check, "~> 0.14.0", only: :test, runtime: false},
+      {:ex_doc, "~> 0.27", only: :test, runtime: false}
     ]
   end
 end
