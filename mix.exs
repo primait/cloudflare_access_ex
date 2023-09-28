@@ -7,7 +7,15 @@ defmodule CloudflareAccessEx.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      preferred_cli_env: [
+        check: :test,
+        credo: :test,
+        dialyzer: :test,
+        doctor: :test,
+        sobelow: :test,
+        "deps.audit": :test
+      ]
     ]
   end
 
@@ -22,8 +30,11 @@ defmodule CloudflareAccessEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.3", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: :test, runtime: false},
+      {:dialyxir, "~> 1.3", only: :test, runtime: false},
+      {:doctor, "~> 0.21.0", only: :test, runtime: false},
+      {:ex_check, "~> 0.14.0", only: :test, runtime: false},
+      {:ex_doc, "~> 0.27", only: :test, runtime: false}
     ]
   end
 end
