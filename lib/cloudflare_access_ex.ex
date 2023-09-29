@@ -2,15 +2,13 @@ defmodule CloudflareAccessEx do
   @moduledoc """
     This library aims to simplify the process of sitting an application behind Cloudflare Access.
 
-    By default, this library starts an Application (see `CloudflareAccessEx.Application`).
-    The application will read Application config to determine which Cloudflare Access domains to
-    retrieve JWKs from. These keys can then be used to verify the application tokens sent by Cloudflare Access
-    when your application is accessed.
+    By default, this library starts its own supervision tree. The root application will read Application
+    config to determine which Cloudflare Access domains to retrieve JWKs from. These keys can then be used
+    to verify the application tokens sent by Cloudflare Access when your application is accessed.
 
     The [Cloudflare docs](https://developers.cloudflare.com/cloudflare-one/identity/authorization-cookie/application-token/)
     provide more information.
 
-    TODO:
     The library also provides a Plug (see `CloudflareAccessEx.Plug`) that can be used to to extract and
     verify tokens from requests.
 

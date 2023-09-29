@@ -1,11 +1,19 @@
 # CloudflareAccessEx
 
-**TODO: Add description**
+## TODO
+
+- [ ] Add a test `JwksStrategy`
+- [ ] If the keys get rotated unexpectedly, the 'JwksStrategy` signers will be out of date until the next poll.
+- [ ] As the `JwksStrategy` module will be called for every request, it is a potential bottleneck.
+      Should consider using an ets table or other shared memory mechanism.
+- [ ] Create a `Plug` module.
+- [ ] Write a better Readme
+- [ ] Consider publishing to hex
+- [ ] Consider contributing `JwksStrategy` (if good) back to [joken_jwks](https://github.com/joken-elixir/joken_jwks)
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `cloudflare_access_ex` to your list of dependencies in `mix.exs`:
+For now, installations should be through git reference. Tags will be available for releases.
 
 ```elixir
 def deps do

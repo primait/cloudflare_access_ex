@@ -1,16 +1,21 @@
 defmodule CloudflareAccessEx.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
   @moduledoc false
-
   use Application
 
+  alias CloudflareAccessEx.{Config, JwksStrategy}
+
   @impl true
-  def start(_type, _args) do
-    children = [
-      # Starts a worker by calling: CloudflareAccessEx.Worker.start_link(arg)
-      # {CloudflareAccessEx.Worker, arg}
-    ]
+  def start(_type, args) do
+    domains =
+      Keyword.get(args, :domains) ||
+        Config.get_domain_strings() ||
+        []
+
+    children =
+      domains
+      |> Enum.map(fn domain ->
+        {JwksStrategy, [domain: domain]}
+      end)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
