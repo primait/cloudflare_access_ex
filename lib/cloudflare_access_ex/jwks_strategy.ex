@@ -19,6 +19,9 @@ defmodule CloudflareAccessEx.JwksStrategy do
   # Default 1 hour poll time for certs
   @poll_time_ms :timer.hours(1)
 
+  # Use 1 minute intervals when certs fail to fetch
+  @poll_retry_time_ms :timer.minutes(1)
+
   @behaviour SignerMatchStrategy
 
   @impl SignerMatchStrategy
@@ -75,6 +78,7 @@ defmodule CloudflareAccessEx.JwksStrategy do
       domain: domain,
       url: get_jwks_url(domain),
       poll_time_ms: Keyword.get(opts, :poll_time_ms, @poll_time_ms),
+      poll_retry_time_ms: Keyword.get(opts, :poll_retry_time_ms, @poll_retry_time_ms),
       signers: %{}
     }
 
@@ -92,8 +96,17 @@ defmodule CloudflareAccessEx.JwksStrategy do
 
   @impl true
   def handle_continue(:update_signers, state) do
-    state = %{state | signers: fetch_signers(state.url)}
-    {:noreply, state}
+    case fetch_signers(state.url) do
+      {:ok, signers} ->
+        state = %{state | signers: signers}
+
+        Process.send_after(self(), :update_signers, state.poll_time_ms)
+        {:noreply, state}
+
+      {:error, _reason} ->
+        Process.send_after(self(), :update_signers, state.poll_retry_time_ms)
+        {:noreply, state}
+    end
   end
 
   @impl true
@@ -105,20 +118,20 @@ defmodule CloudflareAccessEx.JwksStrategy do
     {:global, {__MODULE__, domain}}
   end
 
-  @spec fetch_signers(String.t()) :: %{String.t() => Joken.Signer.t()}
+  @spec fetch_signers(String.t()) :: {:ok, %{String.t() => Joken.Signer.t()}} | {:error, term()}
   defp fetch_signers(url) do
-    {:ok, response} =
-      HTTPoison.get!(url)
-      |> Map.get(:body)
-      |> Jason.decode()
+    with {:ok, httpoison_response} <- HTTPoison.get(url),
+         {:ok, response} <- Jason.decode(httpoison_response.body) do
+      signers = Map.get(response, "keys") |> create_signers
 
-    signers = Map.get(response, "keys") |> create_signers
+      Logger.info("Created #{Enum.count(signers)} signers from keys at #{url}")
 
-    Logger.info("Created #{Enum.count(signers)} signers from keys at #{url}")
-
-    Process.send_after(self(), :update_signers, @poll_time_ms)
-
-    signers
+      {:ok, signers}
+    else
+      {:error, reason} ->
+        Logger.error("Failed to fetch keys from #{url}: #{inspect(reason)}")
+        {:error, reason}
+    end
   end
 
   defp create_signers(keys) do
