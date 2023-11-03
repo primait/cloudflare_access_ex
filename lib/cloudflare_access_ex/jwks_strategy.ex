@@ -120,7 +120,7 @@ defmodule CloudflareAccessEx.JwksStrategy do
 
   @spec fetch_signers(String.t()) :: {:ok, %{String.t() => Joken.Signer.t()}} | {:error, term()}
   defp fetch_signers(url) do
-    with {:ok, httpoison_response} <- HTTPoison.get(url),
+    with {:ok, %HTTPoison.Response{status_code: 200} = httpoison_response} <- HTTPoison.get(url),
          {:ok, response} <- Jason.decode(httpoison_response.body) do
       signers = Map.get(response, "keys") |> create_signers
 
@@ -131,6 +131,13 @@ defmodule CloudflareAccessEx.JwksStrategy do
       {:error, reason} ->
         Logger.error("Failed to fetch keys from #{url}: #{inspect(reason)}")
         {:error, reason}
+
+      {:ok, error_response} ->
+        Logger.error(
+          "Failed to fetch keys from #{url}, got this instead: #{inspect(error_response)}"
+        )
+
+        {:error, :invalid_response}
     end
   end
 

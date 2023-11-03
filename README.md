@@ -6,7 +6,7 @@
 - [ ] If the keys get rotated unexpectedly, the 'JwksStrategy` signers will be out of date until the next poll.
 - [ ] As the `JwksStrategy` module will be called for every request, it is a potential bottleneck.
       Should consider using an ets table or other shared memory mechanism.
-- [ ] Create a `Plug` module.
+- [x] Create a `Plug` module.
 - [ ] Write a better Readme
 - [ ] Consider publishing to hex
 - [ ] Consider contributing `JwksStrategy` (if good) back to [joken_jwks](https://github.com/joken-elixir/joken_jwks)
