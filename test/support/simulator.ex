@@ -70,4 +70,18 @@ defmodule CloudflareAccessEx.Test.Simulator do
       end
     )
   end
+
+  def start_broken_test_server do
+    TestServer.add("/cdn-cgi/access/certs",
+      to: fn conn ->
+        Plug.Conn.send_resp(
+          conn,
+          502,
+          Jason.encode!(%{
+            keys: []
+          })
+        )
+      end
+    )
+  end
 end
