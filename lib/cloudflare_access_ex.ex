@@ -59,7 +59,7 @@ defmodule CloudflareAccessEx do
        There will only be one process that fetches Jwks keys for each domain. It's also possible to consolidate the
        duplicate configuration for the domain string like so:
 
-           config :cloudflare_access_ex, example,
+           config :cloudflare_access_ex, :example,
                domain: "example.cloudflareaccess.com"
 
            config :cloudflare_access_ex, :my_cfa_app,
@@ -70,8 +70,7 @@ defmodule CloudflareAccessEx do
 
     4. Verify tokens either using `CloudflareAccessEx.Plug` (this will return 401 for invalid tokens by default):
 
-           plug CloudflareAccessEx.Plug,
-             application: :my_cfa_app
+           plug CloudflareAccessEx.Plug, cfa_app: :my_cfa_app
 
        or using `CloudflareAccessEx.AccessTokenVerifier` directly if you need even more control:
 
