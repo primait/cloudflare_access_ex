@@ -2,7 +2,7 @@
 
 Simplifies verification of [Cloudflare Access application tokens][1].
 
-[![Build Status](https://github.com/primait/cloudflare_access_ex/workflows/CI/badge.svg)](https://github.com/primait/cloudflare_access_ex/actions/workflows/ci.yaml)
+[![Build Status](https://github.com/primait/cloudflare_access_ex/workflows/CI/badge.svg)](https://github.com/primait/cloudflare_access_ex/actions/workflows/ci.yaml) [![Hex.pm](https://img.shields.io/hexpm/v/cloudflare_access_ex.svg)](https://hex.pm/packages/cloudflare_access_ex) [![Documentation](https://img.shields.io/badge/documentation-gray)](https://hexdocs.pm/cloudflare_access_ex)
 
 ## Getting started
 
