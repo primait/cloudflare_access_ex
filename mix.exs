@@ -1,11 +1,15 @@
 defmodule CloudflareAccessEx.MixProject do
   use Mix.Project
 
+  @source_url "https://github.com/primait/cloudflare_access_ex"
+  @version "0.1.0"
+
   def project do
     [
       app: :cloudflare_access_ex,
-      version: "0.1.0",
-      elixir: "~> 1.14",
+      description: "An elixir library to verify Cloudflare Access application tokens",
+      version: @version,
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -16,7 +20,9 @@ defmodule CloudflareAccessEx.MixProject do
         doctor: :test,
         sobelow: :test,
         "deps.audit": :test
-      ]
+      ],
+      package: package(),
+      docs: docs(),
     ]
   end
 
@@ -48,4 +54,26 @@ defmodule CloudflareAccessEx.MixProject do
       {:test_server, "~> 0.1.13", only: :test}
     ]
   end
+
+  defp docs do
+    [
+      main: "CloudflareAccessEx",
+      extras: [
+        "LICENSE.md": [title: "License"]
+      ],
+      source_url: @source_url,
+      source_ref: @version,
+      formatters: ["html"]
+    ]
+  end
+
+  defp package do
+    [
+      name: "cloudflare_access_ex",
+      maintainers: ["Prima"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => @source_url}
+    ]
+  end
+
 end
