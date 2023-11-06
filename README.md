@@ -13,7 +13,7 @@ For now, installations should be through git reference. Tags will be available f
 ```elixir
 def deps do
   [
-    {:cloudflare_access_ex, git: "git@github.com:primait/cloudflare_access_ex.git", tag: "0.1.0"}
+    {:cloudflare_access_ex, "~> 0.1.0"}
   ]
 end
 ```
