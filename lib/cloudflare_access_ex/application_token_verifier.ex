@@ -1,6 +1,6 @@
-defmodule CloudflareAccessEx.AccessTokenVerifier do
+defmodule CloudflareAccessEx.ApplicationTokenVerifier do
   @moduledoc """
-    Verifies a Cloudflare Access token (JWT) and returns decoded information from the token.
+    Verifies a Cloudflare Access application token (JWT) and returns decoded information from the token.
   """
 
   require Logger
@@ -26,7 +26,7 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
   @type verify_result() :: {:ok, verified_token()} | {:error, atom() | Keyword.t()}
 
   @doc """
-  Creates an AccessTokenVerifier that can be used by `AccessTokenVerifier.verify/2`.
+  Creates an ApplicationTokenVerifier that can be used by `ApplicationTokenVerifier.verify/2`.
 
   If the config is an atom, it will be used to lookup the config in the `:cloudflare_access_ex` `Application` environment.
 
@@ -43,8 +43,8 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
       ...>   audience: "audience_string",
       ...> ])
       ...>
-      ...> AccessTokenVerifier.create(:my_cfa_app)
-      %AccessTokenVerifier{
+      ...> ApplicationTokenVerifier.create(:my_cfa_app)
+      %ApplicationTokenVerifier{
         audience: "audience_string",
         domain: "example.com",
         issuer: "https://example.com",
@@ -59,20 +59,20 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
       ...>   domain: "example.com"
       ...> )
       ...>
-      ...> AccessTokenVerifier.create(:my_cfa_app)
-      %AccessTokenVerifier{
+      ...> ApplicationTokenVerifier.create(:my_cfa_app)
+      %ApplicationTokenVerifier{
         audience: "audience_string",
         domain: "example.com",
         issuer: "https://example.com",
         jwks_strategy: CloudflareAccessEx.JwksStrategy
       }
 
-      iex> AccessTokenVerifier.create(
+      iex> ApplicationTokenVerifier.create(
       ...>   domain: "example.com",
       ...>   audience: "audience_string",
       ...>   jwks_strategy: MyCustomJwksStrategy
       ...> )
-      %AccessTokenVerifier{
+      %ApplicationTokenVerifier{
         audience: "audience_string",
         domain: "example.com",
         issuer: "https://example.com",
@@ -110,7 +110,7 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
   end
 
   @doc """
-  Verifies the authenticity of the Cloudflare Access token in the given `Plug.Conn` or access_token against the given verifier.
+  Verifies the authenticity of the Cloudflare Access application token in the given `Plug.Conn` or application_token against the given verifier.
   """
   @spec verify(Plug.Conn.t() | binary(), __MODULE__.t()) ::
           verify_result()
@@ -118,17 +118,17 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
     header = Plug.Conn.get_req_header(conn, "cf-access-jwt-assertion")
 
     case header do
-      [cf_access_token] -> verify(cf_access_token, config)
+      [application_token] -> verify(application_token, config)
       [] -> {:error, :header_not_found}
       _ -> {:error, :multiple_headers_found}
     end
   end
 
-  def verify(access_token, verifier) do
+  def verify(application_token, verifier) do
     joken_result =
       Joken.verify_and_validate(
         token_config(),
-        access_token,
+        application_token,
         nil,
         verifier,
         hooks(verifier)
@@ -140,17 +140,17 @@ defmodule CloudflareAccessEx.AccessTokenVerifier do
   defp to_verify_result(joken_result) do
     case joken_result do
       {:ok, claims = %{"sub" => ""}} ->
-        Logger.debug("Cloudflare Access token is anonymous: #{log_inspect(claims)}")
+        Logger.debug("Cloudflare Access application token is anonymous: #{log_inspect(claims)}")
         {:ok, :anonymous}
 
       {:ok, claims = %{"sub" => sub, "email" => email}} when email != "" ->
         user = {:user, %{id: sub, email: email}}
-        Logger.debug("Cloudflare Access token is for user #{log_inspect(claims)}")
+        Logger.debug("Cloudflare Access application token is for user #{log_inspect(claims)}")
         {:ok, user}
 
       {:ok, claims} ->
         Logger.warning(
-          "Cloudflare Access token did not have expected claims #{log_inspect(claims)}"
+          "Cloudflare Access application token did not have expected claims #{log_inspect(claims)}"
         )
 
         {:error, [message: "Invalid token", claims: claims]}

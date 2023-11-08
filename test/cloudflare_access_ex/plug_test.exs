@@ -23,7 +23,7 @@ defmodule CloudflareAccessEx.PlugTest do
 
   @tag start_simulator: true
   test "extracts token from plug conn", %{cfa_app: cfa_app} do
-    token = Simulator.create_access_token()
+    token = Simulator.create_application_token()
 
     conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
@@ -44,7 +44,7 @@ defmodule CloudflareAccessEx.PlugTest do
   describe "anonymous token" do
     @tag start_simulator: true
     test "is allowed when enabled", %{cfa_app: cfa_app} do
-      token = Simulator.create_access_token(anonymous: true)
+      token = Simulator.create_application_token(anonymous: true)
       conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
       conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app, allow_anonymous: true)
@@ -54,7 +54,7 @@ defmodule CloudflareAccessEx.PlugTest do
 
     @tag start_simulator: true
     test "is denied when disabled", %{cfa_app: cfa_app} do
-      token = Simulator.create_access_token(anonymous: true)
+      token = Simulator.create_application_token(anonymous: true)
       conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
       conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app, allow_anonymous: false)

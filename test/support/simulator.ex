@@ -1,7 +1,7 @@
 defmodule CloudflareAccessEx.Test.Simulator do
   @moduledoc """
   Simulates cloudflare certs endpoint using test server and creates
-  access tokens that verify against those keys.
+  application tokens that verify against those keys.
   """
 
   alias CloudflareAccessEx.Test.Signers
@@ -11,7 +11,7 @@ defmodule CloudflareAccessEx.Test.Simulator do
   @default_audience "a8d3b7..."
   @default_kid "2b34ecb..."
 
-  def create_access_token(opts \\ []) do
+  def create_application_token(opts \\ []) do
     anonymous = Keyword.get(opts, :anonymous, false)
     sub = (anonymous && "") || Keyword.get(opts, :id, @default_user_id)
     email = Keyword.get(opts, :email, @default_user_email)

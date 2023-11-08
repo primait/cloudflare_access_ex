@@ -4,7 +4,7 @@ defmodule CloudflareAccessEx.JwksStrategyTest do
   alias CloudflareAccessEx.JwksStrategy
 
   # Importing the test subject
-  alias CloudflareAccessEx.AccessTokenVerifier
+  alias CloudflareAccessEx.ApplicationTokenVerifier
   alias CloudflareAccessEx.Test.Simulator
 
   # Yes, we're testing the GenServer callback. No we shouldn't really be doing this.

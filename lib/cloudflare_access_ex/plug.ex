@@ -23,9 +23,9 @@ defmodule CloudflareAccessEx.Plug do
   and anonymous access is not allowed.
   """
   def call(conn, opts) do
-    verifier = CloudflareAccessEx.AccessTokenVerifier.create(opts[:cfa_app])
+    verifier = CloudflareAccessEx.ApplicationTokenVerifier.create(opts[:cfa_app])
 
-    case CloudflareAccessEx.AccessTokenVerifier.verify(conn, verifier) do
+    case CloudflareAccessEx.ApplicationTokenVerifier.verify(conn, verifier) do
       {:ok, :anonymous} ->
         if Keyword.get(opts, :allow_anonymous, false) do
           conn
