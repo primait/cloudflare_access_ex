@@ -4,7 +4,7 @@ defmodule CloudflareAccessEx.ApplicationTokenVerifier do
   """
 
   require Logger
-  alias CloudflareAccessEx.{Config, JwksStrategy}
+  alias CloudflareAccessEx.{Config, JwksStrategy, Principal}
 
   @opaque t :: %__MODULE__{
             domain: String.t(),
@@ -16,14 +16,7 @@ defmodule CloudflareAccessEx.ApplicationTokenVerifier do
   @enforce_keys [:domain, :audience, :issuer, :jwks_strategy]
   defstruct [:domain, :audience, :issuer, :jwks_strategy]
 
-  @type verified_token() ::
-          :anonymous
-          | {:user,
-             %{
-               required(id: String.t()) => String.t(),
-               required(email: String.t()) => String.t()
-             }}
-  @type verify_result() :: {:ok, verified_token()} | {:error, atom() | Keyword.t()}
+  @type verify_result() :: {:ok, Principal.t()} | {:error, atom() | Keyword.t()}
 
   @doc """
   Creates an ApplicationTokenVerifier that can be used by `ApplicationTokenVerifier.verify/2`.
@@ -141,12 +134,14 @@ defmodule CloudflareAccessEx.ApplicationTokenVerifier do
     case joken_result do
       {:ok, claims = %{"sub" => ""}} ->
         Logger.debug("Cloudflare Access application token is anonymous: #{log_inspect(claims)}")
-        {:ok, :anonymous}
+        {:ok, Principal.anonymous()}
 
       {:ok, claims = %{"sub" => sub, "email" => email}} when email != "" ->
-        user = {:user, %{id: sub, email: email}}
-        Logger.debug("Cloudflare Access application token is for user #{log_inspect(claims)}")
-        {:ok, user}
+        Logger.debug(
+          "Cloudflare Access application token is for an authenticated user #{log_inspect(claims)}"
+        )
+
+        {:ok, Principal.authenticated(sub, email)}
 
       {:ok, claims} ->
         Logger.warning(

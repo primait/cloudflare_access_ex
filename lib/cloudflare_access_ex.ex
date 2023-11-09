@@ -74,14 +74,14 @@ defmodule CloudflareAccessEx do
 
        or using `CloudflareAccessEx.ApplicationTokenVerifier` directly if you need even more control:
 
-           alias CloudflareAccessEx.ApplicationTokenVerifier
+           alias CloudflareAccessEx.{ApplicationTokenVerifier, Principal}
 
            verifier = ApplicationTokenVerifier.create(:my_cfa_app)
-           {:ok, token} = conn |> ApplicationTokenVerifier.verify(verifier)
+           {:ok, principal} = conn |> ApplicationTokenVerifier.verify(verifier)
 
-           case token do
-             :anonymous -> # do something
-             {:user, %{id: _, email: _}} -> # do something else
+           case principal do
+             %Principal{type: :anonymous} -> # do something
+             %Principal{type: :authenticated, user_id: _, email: _}} -> # do something else
            end
   """
 end

@@ -14,7 +14,7 @@ defmodule CloudflareAccessEx.Plug do
   require Logger
   import Plug.ErrorHandler
 
-  alias CloudflareAccessEx.ApplicationTokenVerifier
+  alias CloudflareAccessEx.{ApplicationTokenVerifier, Principal}
 
   @behaviour Plug
 
@@ -28,8 +28,8 @@ defmodule CloudflareAccessEx.Plug do
   It will reject the request with 401 (Unauthorized) if the token is invalid
   or if the token is anonymous and anonymous access is not allowed.
 
-  If the token is valid, the current user will be set in the conn's private map
-  and can be accessed via `CloudflareAccessEx.Plug.current_user/1`.
+  If the token is valid, the principal will be set in the conn's private map
+  and can be accessed via `CloudflareAccessEx.Plug.get_principal/1`.
   """
   @impl Plug
   def call(conn, opts) do
@@ -41,38 +41,38 @@ defmodule CloudflareAccessEx.Plug do
     end
   end
 
-  @spec current_user(Plug.Conn.t()) :: ApplicationTokenVerifier.verified_token()
+  @spec get_principal(Plug.Conn.t()) :: Principal.t()
   @doc """
-  Returns the current user. Will raise if executed on a request that has not passed through the plug
+  Returns the principal. Will raise if executed on a request that has not passed through the plug
   or if the plug has rejected the request.
   """
-  def current_user(conn) do
-    conn.private[:cloudflare_access_ex_application_token] ||
-      raise "current_user/1 called on a request that has not passed successfully through CloudflareAccessEx.Plug"
+  def get_principal(conn) do
+    conn.private[:cloudflare_access_ex_principal] ||
+      raise "get_principal/1 called on a request that has not passed successfully through CloudflareAccessEx.Plug"
   end
 
-  defp verified(conn, token, allow_anonymous) do
-    case {token, allow_anonymous} do
-      {:anonymous, true} ->
-        authorized(conn, token)
+  defp verified(conn, principal, allow_anonymous) do
+    case {principal, allow_anonymous} do
+      {%Principal{type: :anonymous}, true} ->
+        authorized(conn, principal)
 
-      {:anonymous, false} ->
+      {%Principal{type: :anonymous}, false} ->
         Logger.warn("Anonymous access has been disabled in this application")
         unauthorized(conn)
 
       _ ->
-        authorized(conn, token)
+        authorized(conn, principal)
     end
   end
 
-  defp authorized(conn, application_token) do
+  defp authorized(conn, principal) do
     conn
-    |> Plug.Conn.put_private(:cloudflare_access_ex_application_token, application_token)
+    |> Plug.Conn.put_private(:cloudflare_access_ex_principal, principal)
   end
 
   defp unauthorized(conn) do
     conn
-    |> Plug.Conn.put_private(:cloudflare_access_ex_application_token, nil)
+    |> Plug.Conn.put_private(:cloudflare_access_ex_principal, nil)
     |> Plug.Conn.resp(401, "401 Unauthorized")
     |> Plug.Conn.halt()
   end

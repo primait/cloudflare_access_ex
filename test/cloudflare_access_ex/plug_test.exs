@@ -1,17 +1,14 @@
 defmodule CloudflareAccessEx.PlugTest do
   use ExUnit.Case, async: true
 
-  alias CloudflareAccessEx.JwksStrategy
-
-  # Importing the test subject
-  alias CloudflareAccessEx.Plug, as: CloudflareAccessExPlug
+  alias CloudflareAccessEx.{JwksStrategy, Principal}
   alias CloudflareAccessEx.Test.Simulator
 
-  test "current_user/1 raises if plug not executed" do
+  test "get_principal/1 raises if plug not executed" do
     conn = %Plug.Conn{}
 
     assert_raise RuntimeError, fn ->
-      CloudflareAccessExPlug.current_user(conn)
+      CloudflareAccessEx.Plug.get_principal(conn)
     end
   end
 
@@ -24,9 +21,9 @@ defmodule CloudflareAccessEx.PlugTest do
 
       conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
-      conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app)
+      conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app)
 
-      assert CloudflareAccessExPlug.current_user(conn) == Simulator.user()
+      assert CloudflareAccessEx.Plug.get_principal(conn) == Simulator.user()
       refute conn.halted
     end
 
@@ -34,13 +31,13 @@ defmodule CloudflareAccessEx.PlugTest do
     test "errors if header missing from plug conn", %{cfa_app: cfa_app} do
       conn = %Plug.Conn{req_headers: []}
 
-      conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app)
+      conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app)
 
       assert conn.status == 401
       assert conn.halted
 
       assert_raise RuntimeError, fn ->
-        CloudflareAccessExPlug.current_user(conn)
+        CloudflareAccessEx.Plug.get_principal(conn)
       end
     end
 
@@ -49,9 +46,9 @@ defmodule CloudflareAccessEx.PlugTest do
       token = Simulator.create_application_token(anonymous: true)
       conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
-      conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app, allow_anonymous: true)
+      conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app, allow_anonymous: true)
 
-      assert CloudflareAccessExPlug.current_user(conn) == :anonymous
+      assert CloudflareAccessEx.Plug.get_principal(conn) == Principal.anonymous()
       refute conn.halted
     end
 
@@ -59,13 +56,13 @@ defmodule CloudflareAccessEx.PlugTest do
       token = Simulator.create_application_token(anonymous: true)
       conn = %Plug.Conn{req_headers: [{"cf-access-jwt-assertion", token}]}
 
-      conn = CloudflareAccessExPlug.call(conn, cfa_app: cfa_app, allow_anonymous: false)
+      conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app, allow_anonymous: false)
 
       assert conn.halted
       assert conn.status == 401
 
       assert_raise RuntimeError, fn ->
-        CloudflareAccessExPlug.current_user(conn)
+        CloudflareAccessEx.Plug.get_principal(conn)
       end
     end
   end

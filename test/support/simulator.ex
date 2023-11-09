@@ -46,11 +46,10 @@ defmodule CloudflareAccessEx.Test.Simulator do
   end
 
   def user(opts \\ []) do
-    {:user,
-     %{
-       id: Keyword.get(opts, :id, @default_user_id),
-       email: Keyword.get(opts, :email, @default_user_email)
-     }}
+    CloudflareAccessEx.Principal.authenticated(
+      Keyword.get(opts, :id, @default_user_id),
+      Keyword.get(opts, :email, @default_user_email)
+    )
   end
 
   def start_test_server() do

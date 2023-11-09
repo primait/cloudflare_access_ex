@@ -4,10 +4,10 @@ defmodule CloudflareAccessEx.ApplicationTokenVerifierTest do
   alias CloudflareAccessEx.JwksStrategy
 
   # Importing the test subject
-  alias CloudflareAccessEx.ApplicationTokenVerifier
+  alias CloudflareAccessEx.{ApplicationTokenVerifier, Principal}
   alias CloudflareAccessEx.Test.Simulator
 
-  doctest(CloudflareAccessEx.ApplicationTokenVerifier)
+  doctest(ApplicationTokenVerifier)
 
   setup %{} do
     :ok = Simulator.start_test_server()
@@ -82,7 +82,7 @@ defmodule CloudflareAccessEx.ApplicationTokenVerifierTest do
     token = Simulator.create_application_token(anonymous: true)
 
     assert ApplicationTokenVerifier.verify(token, verifier) ==
-             {:ok, :anonymous}
+             {:ok, Principal.anonymous()}
   end
 
   @tag start_simulator: true
