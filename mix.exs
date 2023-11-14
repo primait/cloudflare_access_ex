@@ -50,7 +50,7 @@ defmodule CloudflareAccessEx.MixProject do
       {:httpoison, "~> 1.7 or ~> 2.0"},
       {:joken, "~> 2.6"},
       {:joken_jwks, "~> 1.6.0"},
-      {:plug, "~> 1.14.2"},
+      {:plug, "~> 1.15.2"},
       {:test_server, "~> 0.1.13", only: :test}
     ]
   end
