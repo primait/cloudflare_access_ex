@@ -25,7 +25,7 @@ defmodule CloudflareAccessEx.Plug do
   @doc """
   Verifies the Cloudflare Access application token.
 
-  It will reject the request with 401 (Unauthorized) if the token is invalid
+  It will reject the request with 403 (Forbidden) if the token is invalid
   or if the token is anonymous and anonymous access is not allowed.
 
   If the token is valid, the principal will be set in the conn's private map
@@ -37,7 +37,7 @@ defmodule CloudflareAccessEx.Plug do
 
     case ApplicationTokenVerifier.verify(conn, verifier) do
       {:ok, token} -> verified(conn, token, opts[:allow_anonymous] || false)
-      {:error, _} -> unauthorized(conn)
+      {:error, _} -> forbidden(conn)
     end
   end
 
@@ -58,7 +58,7 @@ defmodule CloudflareAccessEx.Plug do
 
       {%Principal{type: :anonymous}, false} ->
         Logger.warn("Anonymous access has been disabled in this application")
-        unauthorized(conn)
+        forbidden(conn)
 
       _ ->
         authorized(conn, principal)
@@ -70,10 +70,10 @@ defmodule CloudflareAccessEx.Plug do
     |> Plug.Conn.put_private(:cloudflare_access_ex_principal, principal)
   end
 
-  defp unauthorized(conn) do
+  defp forbidden(conn) do
     conn
     |> Plug.Conn.put_private(:cloudflare_access_ex_principal, nil)
-    |> Plug.Conn.resp(401, "401 Unauthorized")
+    |> Plug.Conn.resp(403, "403 Forbidden")
     |> Plug.Conn.halt()
   end
 end

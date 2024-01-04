@@ -68,7 +68,7 @@ defmodule CloudflareAccessEx do
            config :cloudflare_access_ex, :my_other_cfa_app,
                domain: :example, audience: "7309b8..."
 
-    4. Verify tokens either using `CloudflareAccessEx.Plug` (this will return 401 for invalid tokens by default):
+    4. Verify tokens either using `CloudflareAccessEx.Plug` (this will return 403 for invalid tokens by default):
 
            plug CloudflareAccessEx.Plug, cfa_app: :my_cfa_app
 
