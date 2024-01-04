@@ -33,7 +33,7 @@ defmodule CloudflareAccessEx.PlugTest do
 
       conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app)
 
-      assert conn.status == 401
+      assert conn.status == 403
       assert conn.halted
 
       assert_raise RuntimeError, fn ->
@@ -59,7 +59,7 @@ defmodule CloudflareAccessEx.PlugTest do
       conn = CloudflareAccessEx.Plug.call(conn, cfa_app: cfa_app, allow_anonymous: false)
 
       assert conn.halted
-      assert conn.status == 401
+      assert conn.status == 403
 
       assert_raise RuntimeError, fn ->
         CloudflareAccessEx.Plug.get_principal(conn)
