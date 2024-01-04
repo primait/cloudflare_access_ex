@@ -2,7 +2,7 @@ defmodule CloudflareAccessEx.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/primait/cloudflare_access_ex"
-  @version "0.1.2"
+  @version "0.1.3"
 
   def project do
     [
