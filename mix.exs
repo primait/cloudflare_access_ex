@@ -2,7 +2,7 @@ defmodule CloudflareAccessEx.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/primait/cloudflare_access_ex"
-  @version "0.1.4"
+  @version "0.1.5"
 
   def project do
     [
@@ -49,7 +49,7 @@ defmodule CloudflareAccessEx.MixProject do
       {:mix_audit, "~> 2.0", only: :test, runtime: false},
       {:httpoison, "~> 1.7 or ~> 2.0"},
       {:joken, "~> 2.6"},
-      {:joken_jwks, "~> 1.6.0"},
+      {:joken_jwks, "~> 1.7.0"},
       {:plug, "~> 1.14"},
       {:test_server, "~> 0.1.13", only: :test}
     ]

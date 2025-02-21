@@ -57,7 +57,7 @@ defmodule CloudflareAccessEx.Plug do
         authorized(conn, principal)
 
       {%Principal{type: :anonymous}, false} ->
-        Logger.warn("Anonymous access has been disabled in this application")
+        Logger.warning("Anonymous access has been disabled in this application")
         forbidden(conn)
 
       _ ->
