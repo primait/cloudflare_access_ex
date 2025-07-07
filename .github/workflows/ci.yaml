@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-mix-${{ env.cache-name }}-
 
       - name: Setup Elixir
-        uses: erlef/setup-beam@5304e04ea2b355f03681464e683d92e3b2f18451 # ratchet:erlef/setup-beam@v1
+        uses: erlef/setup-beam@8e7fdef09ffa3ea54328b5000c170a3b9b20ca96 # ratchet:erlef/setup-beam@v1
         with:
           otp-version: ${{matrix.otp}}
           elixir-version: ${{matrix.elixir}}
