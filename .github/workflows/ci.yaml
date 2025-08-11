@@ -22,7 +22,7 @@ jobs:
     steps:
       # Check out the code.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Define how to cache deps. Restores existing cache if present.
       - name: Cache deps
