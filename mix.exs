@@ -44,7 +44,7 @@ defmodule CloudflareAccessEx.MixProject do
       {:credo, "~> 1.7", only: :test, runtime: false},
       {:dialyxir, "~> 1.3", only: :test, runtime: false},
       {:doctor, "~> 0.21.0", only: [:dev, :test], runtime: false},
-      {:ex_check, "~> 0.15.0", only: :test, runtime: false},
+      {:ex_check, "~> 0.16.0", only: :test, runtime: false},
       {:ex_doc, "~> 0.27", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.0", only: :test, runtime: false},
       {:httpoison, "~> 1.7 or ~> 2.0"},
