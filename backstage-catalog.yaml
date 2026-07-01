@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: "cloudflare_access_ex"
+  description: "Library that simplifies verification of Cloudflare Access application tokens"
+spec:
+  type: "library"
+  lifecycle: production
+  owner: "group:default/team-iam"
+  system: prima.it
