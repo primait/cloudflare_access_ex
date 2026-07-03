@@ -7,10 +7,18 @@ updates:
   - package-ecosystem: mix
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
+      time: "21:00"
+      day: monday
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: weekly
+      time: "21:00"
+      day: monday
+    cooldown:
+      default-days: 7
