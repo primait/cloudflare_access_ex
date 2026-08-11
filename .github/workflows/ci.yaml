@@ -18,7 +18,7 @@ jobs:
       # and running the workflow steps.
       matrix:
         otp: ['25.0.4']
-        elixir: ['1.14.3']
+        elixir: ['1.15.7']
     steps:
       # Check out the code.
       - name: Checkout
