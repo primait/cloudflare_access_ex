@@ -11,8 +11,8 @@ jobs:
       - name: Setup Elixir
         uses: erlef/setup-beam@54075bcc5e249e4758d363f27d099f55d843f124 # ratchet:erlef/setup-beam@v1
         with:
-          otp-version: '24'
-          elixir-version: '1.13'
+          otp-version: '27'
+          elixir-version: '1.17'
       - name: Checkout
         uses: actions/checkout@v7
       - name: setup hex
