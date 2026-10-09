@@ -13,6 +13,14 @@ defmodule CloudflareAccessEx.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      hex: [
+        ignore_advisories: [
+          "CVE-2026-47071",
+          "CVE-2026-47076",
+          "CVE-2026-47069",
+          "CVE-2026-47075"
+        ]
+      ],
       preferred_cli_env: [
         check: :test,
         credo: :test,
@@ -44,7 +52,7 @@ defmodule CloudflareAccessEx.MixProject do
       {:credo, "~> 1.7", only: :test, runtime: false},
       {:dialyxir, "~> 1.3", only: :test, runtime: false},
       {:doctor, "~> 0.23.0", only: [:dev, :test], runtime: false},
-      {:ex_check, "~> 0.16.0", only: :test, runtime: false},
+      {:ex_check, "~> 0.17.0", only: :test, runtime: false},
       {:ex_doc, "~> 0.27", only: [:dev, :test], runtime: false},
       {:mix_audit, "~> 2.0", only: :test, runtime: false},
       {:httpoison, "~> 1.7 or ~> 2.0"},
