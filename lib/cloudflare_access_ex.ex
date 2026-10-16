@@ -19,7 +19,7 @@ defmodule CloudflareAccessEx do
 
            def deps do
              [
-               {:cloudflare_access_ex, "~> 0.1", runtime: Mix.env() not in [:test, :dev]}
+               {:cloudflare_access_ex, "~> 0.2", runtime: Mix.env() not in [:test, :dev]}
              ]
            end
 
@@ -28,7 +28,7 @@ defmodule CloudflareAccessEx do
 
            def deps do
              [
-               {:cloudflare_access_ex, "~> 0.1", runtime: false}
+               {:cloudflare_access_ex, "~> 0.2", runtime: false}
              ]
            end
 
